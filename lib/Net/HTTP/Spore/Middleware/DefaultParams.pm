@@ -16,12 +16,7 @@ has default_params => (
 
 sub call {
     my ( $self, $req ) = @_;
-    my %params = defined($req->env->{'spore.params'}) ?  @{ $req->env->{'spore.params'} } : ();
-    foreach my $k ( keys %{ $self->default_params } ) {
-        $params{$k} = $self->default_params->{$k};
-    }
-    my @a_params = %params;
-    $req->env->{'spore.params'} = \@a_params;
+    $req->env->{'spore.params'}  = [ %{ +{ @{$req->env->{'spore.params'} || []}, %{$self->default_params} } } ];
 }
 
 # remove the 'required parameters' checking, so that explicit required
