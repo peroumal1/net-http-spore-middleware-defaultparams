@@ -34,6 +34,11 @@ my $mock_server = {
         ok $req, 'and we managed to reach the parametrized URL';
         $req->new_response( 200, [ 'Content-Type' => 'text/plain' ], 'ok' );
     },
+    '/another_test/tata' => sub {
+        my $req = shift;
+        ok $req, 'and we managed to reach a non default parametrized URL';
+        $req->new_response( 200, [ 'Content-Type' => 'text/plain' ], 'ok' );
+    },
 };
 
 ok my $client = Net::HTTP::Spore->new_from_string( JSON::encode_json($api) ),
@@ -46,6 +51,8 @@ $client->enable( 'Mock', tests => $mock_server );
 my $res = $client->get_test_required_params();
 is $res->body, 'ok', 'and we get a response when passing default URL paramters';
 $res = $client->get_test_token_params();
+is $res->body, 'ok', 'and we get a response from the mock server';
+$res = $client->get_test_token_params(otherparam => 'tata');
 is $res->body, 'ok', 'and we get a response from the mock server';
 done_testing();
 
