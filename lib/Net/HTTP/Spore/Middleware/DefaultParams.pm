@@ -16,7 +16,7 @@ has default_params => (
 
 sub call {
     my ( $self, $req ) = @_;
-    $req->env->{'spore.params'}  = [ %{ +{ @{$req->env->{'spore.params'} || []}, %{$self->default_params} } } ];
+    $req->env->{'spore.params'}  = [ %{ +{ %{$self->default_params}, @{$req->env->{'spore.params'} || []} } } ];
 }
 
 # remove the 'required parameters' checking, so that explicit required
